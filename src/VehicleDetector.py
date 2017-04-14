@@ -3,14 +3,15 @@ import cv2
 import numpy as np
 import pickle
 
+from BufferedHeatmap import BufferedHeatmap
 from FeatureExtractor import FeatureExtractor
-from scipy.ndimage.measurements import label
+from Vehicle import Vehicle
 
 
 class VehicleDetector():
     """Vehicle Detector"""
 
-    def __init__(self):
+    def __init__(self, frame_size=(720, 1280)):
         """Initialize vehicle detector"""
         # Load scaler and classifier from pickle file
         loaded_data = pickle.load(open('trained_classifier.p', 'rb'))
@@ -23,16 +24,8 @@ class VehicleDetector():
         self.lower_window_limit = 400
         self.upper_window_limit = 680
 
-        self.heatmap = None
+        self.heatmap = BufferedHeatmap(input_size=frame_size, buffer_size=28, threshold=2)
 
-    def add_heat(self, bbox_list):
-        """Add heat within given bounding boxes"""
-        for box in bbox_list:
-            self.heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
-
-    def threshold_heat(self, threshold):
-        """Apply a threshold to heatmap"""
-        self.heatmap[self.heatmap <= threshold] = 0
 
     def draw_labeled_bboxes(self, img, labels):
         """Draw heatmap bounding boxes"""
@@ -54,21 +47,28 @@ class VehicleDetector():
         """Process a video frame"""
         draw_img = np.copy(frame)
 
-        # Initialize heatmap
-        self.heatmap = np.zeros_like(frame[:, :, 0]).astype(np.float)
-
         # Process frame at multiple scales
-        self.detect_vehicles(frame, 1)
-        self.detect_vehicles(frame, 1.5)
-        self.detect_vehicles(frame, 2)
+        boxes1 = self.detect_vehicles(frame, 1)
+        boxes2 = self.detect_vehicles(frame, 1.25)
+        boxes3 = self.detect_vehicles(frame, 1.5)
+        boxes4 = self.detect_vehicles(frame, 2)
 
-        # Get labels based on heatmap and draw them
-        self.threshold_heat(1)
-        labels = label(self.heatmap)
+        mini_width = frame.shape[1] // 4
+        mini_height = frame.shape[0] // 4
+        heatmap = self.heatmap.get_heatmap()
+        heatmap = cv2.resize(heatmap, (mini_width, mini_height), None, 0, 0, cv2.INTER_LINEAR)
+        heatmap = np.dstack((heatmap, np.zeros_like(heatmap), np.zeros_like(heatmap)))
+
+        labels = self.heatmap.get_labels()
         draw_img = self.draw_labeled_bboxes(draw_img, labels)
 
+        draw_img[0:0 + mini_height, 0:0 + mini_width] = heatmap
+        # bboxes = boxes1
+        # bboxes.extend(boxes2)
+        # bboxes.extend(boxes3)
+        # bboxes.extend(boxes4)
+        #
         # for box in bboxes:
-        #     print(box[0])
         #     cv2.rectangle(draw_img, box[0], box[1], (0, 0, 255), 6)
 
         return draw_img
@@ -145,6 +145,6 @@ class VehicleDetector():
                     bboxes.append([top_left_corner, bottom_right_corner])
                     # cv2.rectangle(draw_img, top_left_corner, bottom_right_corner, (0, 0, 255), 6)
 
-        self.add_heat(bboxes)
+        self.heatmap.add_heat(bboxes)
 
         return bboxes
