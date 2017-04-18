@@ -1,2 +1,3 @@
 __pycache__/
+.ipynp_checkpoints/
 training_images/

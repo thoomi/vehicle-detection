@@ -12,6 +12,7 @@ class BufferedHeatmap():
         """Initialize heatmap"""
         self.input_size = input_size
         self.threshold = threshold
+        self.buffer_size = buffer_size
         self.heatmaps = deque(maxlen=buffer_size)
 
     def add_heat(self, bboxes):
@@ -22,7 +23,6 @@ class BufferedHeatmap():
             heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
 
         heatmap[heatmap <= 1] = 0
-
         self.heatmaps.append(heatmap)
 
     def get_labels(self):
@@ -32,11 +32,11 @@ class BufferedHeatmap():
 
     def get_heatmap(self):
         """Return combined heatmap"""
-        outputHeatmap = np.zeros(self.input_size).astype(np.float)
+        outHeatmap = np.zeros(self.input_size).astype(np.float)
 
         for heatmap in self.heatmaps:
-            outputHeatmap += heatmap
+            outHeatmap += heatmap
 
-        outputHeatmap[outputHeatmap <= 5] = 0
+        outHeatmap[outHeatmap <= self.threshold] = 0
 
-        return outputHeatmap
+        return outHeatmap

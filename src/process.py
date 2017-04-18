@@ -30,9 +30,9 @@ def process_image(image):
     return result
 
 
-# image = cv2.imread('./test_images/test1.jpg')
+# image = cv2.imread('./test_images/test6.jpg')
 # output = process_image(image)
-# plt.imshow(output[..., ::-1])
+# plt.imshow(output)
 # plt.show()
 
 # =============================================================================
