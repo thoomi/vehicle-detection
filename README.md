@@ -17,8 +17,7 @@ The goals/steps of this project are the following:
 
 ### Results
 [image16]: ./output_images/final_output_sample.gif "Final output"
-![Example of hog features][image16]
-
+[![Project video thumbnail][image16]](./result_project_video.mp4?raw=true)
 
 For a more detailed insight on the project please see the full [Writeup / Report](https://github.com/thoomi/vehicle-detection/blob/master/writeup_report.md).
 
