@@ -11,7 +11,7 @@ This is the fifth project I am doing as part of Udacity's Self-Driving-Car Nanod
 
 #### Preview:
 
-![Example of hog features][image16]
+[![Project video thumbnail][image16]](./result_project_video.mp4?raw=true)
 
 
 [//]: # (Image References)
@@ -112,7 +112,7 @@ The first image below shows an example of all the detected windows which are com
 
 #### 1. Project Video Result
 
-[![Project video thumbnail][videothumb1]](./vehicle-detection/result_project_video.mp4?raw=true)
+[![Project video thumbnail][videothumb1]](./result_project_video.mp4?raw=true)
 
 
 #### 2. False Positive rejection
