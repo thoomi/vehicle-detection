@@ -64,8 +64,8 @@ The code for this step is located in the file `FeatureExtractor.py`. Within the 
 
 I found the following HOG extractor parameters to work best for me:
 
-* Number of Orientations: **9**
-* Pixel per cell: **16**
+* Number of Orientations: **18**
+* Pixel per cell: **8**
 * Cells per block: **2**
 
 There are example feature visualizations below for each color channel and an additional visualization of a non-car feature combination.
